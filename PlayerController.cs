@@ -1,49 +1,50 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-public class PlayerController: MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
+
     public float speed;
-    public Text CountText;
+    public Text countText;
     public Text winText;
-    private Rigidbody rb;
+    
+    private Rigidbody2D rb2d;
     private int count;
 
-
-    private void Start()
+    void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb2d = GetComponent<Rigidbody2D>();
         count = 0;
+        winText.text = "";
         SetCountText();
-        CountText.text = "Count:" + count.ToString ();
-        winText.text = ""; 
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce(movement * speed);
+        Vector2 movement = new Vector2(moveHorizontal, moveVertical);
+        rb2d.AddForce(movement * speed);
+        if (Input.GetKey("escape"))
+            Application.Quit();
     }
-    private void OnTriggerEnter(Collider other)
+
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Pick Up"))
+        if (other.gameObject.CompareTag ("PickUp"))
         {
-            other.gameObject.SetActive(false);
-            count = count + 1
-            CountText.text = "Count:" + count.ToString();
+            other.gameObject.SetActive (false);
+            count = count + 1;
+            SetCountText();
         }
     }
     void SetCountText()
     {
-        CountText.text = "Count:" + count.ToString();
-        if (count>=12)
+        countText.text = "Count: " + count.ToString(); 
+        if (count >=10)
         {
-            winText.text = "You Win!";
+            winText.text = "You win!"; 
         }
     }
 }
